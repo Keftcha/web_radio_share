@@ -1,0 +1,5 @@
+# vim swap files
+*.swp
+
+# env variables
+env.json
