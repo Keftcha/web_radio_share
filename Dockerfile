@@ -3,7 +3,7 @@ FROM golang:1.14 as builder
 WORKDIR /go/src/app
 COPY . .
 
-RUN go build -o /bin/app
+RUN CGO_ENABLED=0 go build -o /bin/app
 
 
 FROM scratch
