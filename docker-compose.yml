@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+    server:
+        build: "."
+        ports: [5596:8080]
+        volumes:
+            - ./music:/music
+
+volumes:
+    music:
