@@ -3,3 +3,7 @@
 
 # env variables
 env.json
+
+# our musics (for testing)
+music/*
+!music/.gitkeep
