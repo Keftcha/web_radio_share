@@ -29,7 +29,7 @@ func listen(w http.ResponseWriter, r *http.Request) {
 		markers.Song = "No song playing"
 		fmt.Println("Not listening")
 	} else { // The song parameter is present
-		markers.SongPath = fmt.Sprintf("/music/%s", markers.Song)
+		markers.SongPath = fmt.Sprintf("/music/%s", song)
 
 		// Check if we can acces to the file
 		if _, err := os.Stat(markers.SongPath); err != nil { // We can't acces the file
@@ -46,7 +46,7 @@ func listen(w http.ResponseWriter, r *http.Request) {
 				mimeType = "application/octet-stream"
 			}
 
-			markers.Infos = fmt.Sprintf("Currently playing: %s !", markers.Song)
+			markers.Infos = fmt.Sprintf("Currently playing: %s !", song)
 			markers.Song = song
 			markers.SongType = mimeType
 			fmt.Println("Listening: ", markers.Song)
