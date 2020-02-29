@@ -6,5 +6,11 @@
     </head>
     <body>
         {{.Infos}}
+        <audio controls autoplay>
+            <source
+                src="{{.SongPath}}"
+                type="{{.SongType}}"
+            >
+        </audio>
     </body>
 </html>

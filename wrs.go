@@ -8,28 +8,28 @@ import (
 )
 
 type Markers struct {
-	Song  string
-	Infos string
+	Song     string
+	SongPath string
+	SongType string
+	Infos    string
 }
 
 func listen(w http.ResponseWriter, r *http.Request) {
 	song := r.URL.Query().Get("song")
 
-	// Check the song parameter
-	var infos string
-	if song != "" {
-		infos = fmt.Sprintf("Currently playing: %s !", song)
-		fmt.Println("Listening: ", song)
-	} else {
-		infos = fmt.Sprint("No song is playing.")
-		song = "No song playing"
-		fmt.Println("Not listening")
-	}
+	// Our markers
+	markers := new(Markers)
 
-	// Set our markers
-	markers := &Markers{
-		Song:  song,
-		Infos: infos,
+	// Fill markers values
+	if song == "" {
+		markers.Infos = fmt.Sprint("No song is playing.")
+		markers.Song = "No song playing"
+		fmt.Println("Not listening")
+	} else {
+		markers.Infos = fmt.Sprintf("Currently playing: %s !", song)
+		markers.Song = song
+		markers.SongPath = fmt.Sprintf("/music/%s", song)
+		fmt.Println("Listening: ", song)
 	}
 
 	// Load and execute the template
