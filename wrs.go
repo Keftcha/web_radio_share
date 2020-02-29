@@ -24,20 +24,19 @@ func listen(w http.ResponseWriter, r *http.Request) {
 	markers := new(Markers)
 
 	// Fill markers values
-	if song == "" {
+	if song == "" { // The song parameter isn't present
 		markers.Infos = "No song is playing."
 		markers.Song = "No song playing"
 		fmt.Println("Not listening")
-	} else {
-		markers.Song = song
+	} else { // The song parameter is present
 		markers.SongPath = fmt.Sprintf("/music/%s", markers.Song)
 
-		// Check if the song exist
-		if _, err := os.Stat(markers.SongPath); err != nil {
+		// Check if we can acces to the file
+		if _, err := os.Stat(markers.SongPath); err != nil { // We can't acces the file
 			markers.Infos = "An error occured finding the file."
 			markers.Song = "Error finding file"
 			fmt.Println(err)
-		} else {
+		} else { // We can acces the file
 			// get the mime type of the song
 			var mimeType string
 			if mime, err := mimetype.DetectFile(markers.SongPath); err == nil {
@@ -47,7 +46,8 @@ func listen(w http.ResponseWriter, r *http.Request) {
 				mimeType = "application/octet-stream"
 			}
 
-			markers.Infos = fmt.Sprintf("Currently playing: %s !", song)
+			markers.Infos = fmt.Sprintf("Currently playing: %s !", markers.Song)
+			markers.Song = song
 			markers.SongType = mimeType
 			fmt.Println("Listening: ", markers.Song)
 		}
