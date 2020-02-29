@@ -6,10 +6,10 @@ import (
 	"net/http"
 )
 
-func root(w http.ResponseWriter, r *http.Request) {
+func listen(w http.ResponseWriter, r *http.Request) {
 	song := r.URL.Query().Get("song")
 	if song != "" {
-		fmt.Fprintf(w, "Currently playing: %s!", song)
+		fmt.Fprintf(w, "Currently playing: %s !", song)
 		fmt.Println("Listening: ", song)
 	} else {
 		fmt.Fprint(w, "No song is playing.")
@@ -19,6 +19,9 @@ func root(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	fmt.Println("The server is now running !")
-	http.HandleFunc("/hoster", root)
+
+	http.HandleFunc("/hoster", listen)
+	http.HandleFunc("/hoster/", listen)
+
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
