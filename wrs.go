@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+
+	"github.com/gabriel-vasile/mimetype"
 )
 
 type Markers struct {
@@ -26,9 +28,21 @@ func listen(w http.ResponseWriter, r *http.Request) {
 		markers.Song = "No song playing"
 		fmt.Println("Not listening")
 	} else {
-		markers.Infos = fmt.Sprintf("Currently playing: %s !", song)
 		markers.Song = song
-		markers.SongPath = fmt.Sprintf("/music/%s", song)
+		markers.SongPath = fmt.Sprintf("/music/%s", markers.Song)
+		markers.Infos = fmt.Sprintf("Currently playing: %s !", song)
+
+		// get the mime type of the song
+		var mimeType string
+		if mime, err := mimetype.DetectFile(markers.SongPath); err == nil {
+			mimeType = mime.String()
+		} else {
+			fmt.Println(err)
+			mimeType = "application/octet-stream"
+		}
+
+		markers.SongType = mimeType
+
 		fmt.Println("Listening: ", song)
 	}
 
@@ -42,6 +56,15 @@ func main() {
 
 	http.HandleFunc("/hoster", listen)
 	http.HandleFunc("/hoster/", listen)
+
+	// Serve sound as static file when path start with `/music/`
+	http.Handle(
+		"/music/",
+		http.StripPrefix(
+			"/music/",
+			http.FileServer(http.Dir("/music")),
+		),
+	)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
