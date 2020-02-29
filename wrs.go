@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gabriel-vasile/mimetype"
 )
@@ -24,26 +25,32 @@ func listen(w http.ResponseWriter, r *http.Request) {
 
 	// Fill markers values
 	if song == "" {
-		markers.Infos = fmt.Sprint("No song is playing.")
+		markers.Infos = "No song is playing."
 		markers.Song = "No song playing"
 		fmt.Println("Not listening")
 	} else {
 		markers.Song = song
 		markers.SongPath = fmt.Sprintf("/music/%s", markers.Song)
-		markers.Infos = fmt.Sprintf("Currently playing: %s !", song)
 
-		// get the mime type of the song
-		var mimeType string
-		if mime, err := mimetype.DetectFile(markers.SongPath); err == nil {
-			mimeType = mime.String()
-		} else {
+		// Check if the song exist
+		if _, err := os.Stat(markers.SongPath); err != nil {
+			markers.Infos = "An error occured finding the file."
+			markers.Song = "Error finding file"
 			fmt.Println(err)
-			mimeType = "application/octet-stream"
+		} else {
+			// get the mime type of the song
+			var mimeType string
+			if mime, err := mimetype.DetectFile(markers.SongPath); err == nil {
+				mimeType = mime.String()
+			} else {
+				fmt.Println(err)
+				mimeType = "application/octet-stream"
+			}
+
+			markers.Infos = fmt.Sprintf("Currently playing: %s !", song)
+			markers.SongType = mimeType
+			fmt.Println("Listening: ", markers.Song)
 		}
-
-		markers.SongType = mimeType
-
-		fmt.Println("Listening: ", song)
 	}
 
 	// Load and execute the template
