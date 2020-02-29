@@ -32,11 +32,11 @@ listening and lister that one at the same time as the hoster.
 
 1. Clone or download this repository.
 2. Be sure you have docker installed otherwise install it ([Docker install](https://docs.docker.com/get-docker/ "Install docker"))
-3. Complete the `env.json.tpl` file and rename it to `env.json`
+3. Complete the `.env.tpl` file and rename it to `.env`
 3. Start the container by doing `docker-compose up`
 4. The project is started.
 
 ## How can I configure the project ?
 
-The project can be configured throught the `env.json` file.  
-You have the `env.json.tpl` file to help make your own configuration.
+The project can be configured throught the `.env` file.  
+You have the `.env.tpl` file to help make your own configuration.

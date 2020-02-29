@@ -7,3 +7,6 @@ env.json
 # our musics (for testing)
 music/*
 !music/.gitkeep
+
+# the environment variables
+.env

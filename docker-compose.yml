@@ -5,7 +5,7 @@ services:
         build: "."
         ports: [5596:8080]
         volumes:
-            - ./music:/music
+            - ${music_directory}:/music
 
 volumes:
     music:
