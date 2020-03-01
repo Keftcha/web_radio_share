@@ -27,7 +27,7 @@ Other users have to go at the address of the host.
 They see what is in the music library of the hoster, what song he currently
 listening and lister that one at the same time as the hoster.
 
-## How can I install this project and share my sounds
+## How can I install this project and share my sounds ?
 
 1. Clone or download this repository.
 2. Be sure you have docker installed otherwise install it ([Docker install](https://docs.docker.com/get-docker/ "Install docker"))
