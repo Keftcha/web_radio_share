@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/gabriel-vasile/mimetype"
 )
@@ -15,6 +17,23 @@ type Markers struct {
 	SongPath string
 	SongType string
 	Infos    string
+	Files    []string
+}
+
+func loadDirectoryTree(root string) []string {
+	files := make([]string, 0, 1)
+	filepath.Walk(
+		root,
+		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+
+			files = append(files, path)
+			return nil
+		},
+	)
+	return files
 }
 
 func listen(w http.ResponseWriter, r *http.Request) {
@@ -52,6 +71,22 @@ func listen(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("Listening: ", markers.Song)
 		}
 	}
+
+	// Load directoies and files
+	var files []string = loadDirectoryTree("/music")
+
+	// Remove the `/music/` part of files path and remove all non audio files
+	audioFiles := make([]string, 0)
+	for _, path := range files {
+		mt, err := mimetype.DetectFile(path)
+		mime := strings.Split(mt.String(), "/")[0] // General type of file
+		// There is no error and it's an audio file
+		if err == nil && mime == "audio" {
+			audioFiles = append(audioFiles, path[len("/music/"):])
+		}
+	}
+
+	markers.Files = audioFiles
 
 	// Load and execute the template
 	tpl, _ := template.ParseFiles("player.html")

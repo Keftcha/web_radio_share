@@ -6,11 +6,25 @@
     </head>
     <body>
         {{.Infos}}
+
+        <br>
+
         <audio controls autoplay>
             <source
                 src="{{.SongPath}}"
                 type="{{.SongType}}"
             >
         </audio>
+
+        <br>
+        <br>
+
+        {{range .Files}}
+            <a href="/hoster/?song={{.}}">
+                {{.}}
+            </a>
+            <br>
+        {{end}}
+
     </body>
 </html>
