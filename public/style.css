@@ -1,0 +1,28 @@
+body {
+    background-color: black;
+    font-family: ubuntu, system-ui;
+    line-height: 1.5;
+    margin: 0px;
+}
+
+.title {
+    font-weight: bold;
+    color: #F2F2F2;
+}
+
+.player {
+    overflow: auto;
+    text-align: center;
+    height: 14vh;
+    padding-top: 1vh;
+}
+
+.controls {
+    width: 85%;
+}
+
+.songs {
+    overflow: auto;
+    height: 85vh;
+    padding-left: 5px;
+}

@@ -3,28 +3,30 @@
     <head>
         <meta charset="UTF-8">
         <title>WRS player ({{.Song}})</title>
+        <link rel="stylesheet" href="/style.css" >
     </head>
     <body>
-        {{.Infos}}
+        <div class="player">
+            <div class="title">
+                {{.Song}}
+            </div>
 
-        <br>
+            <audio controls autoplay class="controls">
+                <source
+                    src="{{.SongPath}}"
+                    type="{{.SongType}}"
+                >
+            </audio>
+        </div>
 
-        <audio controls autoplay>
-            <source
-                src="{{.SongPath}}"
-                type="{{.SongType}}"
-            >
-        </audio>
-
-        <br>
-        <br>
-
-        {{range .Files}}
-            <a href="/hoster/?song={{.}}">
-                {{.}}
-            </a>
-            <br>
-        {{end}}
+        <div class="songs">
+            {{range .Files}}
+                <a href="/hoster/?song={{.}}">
+                    {{.}}
+                </a>
+                <br>
+            {{end}}
+        </div>
 
     </body>
 </html>

@@ -11,5 +11,6 @@ FROM scratch
 WORKDIR /bin/app
 COPY --from=builder /bin/app .
 COPY player.html .
+COPY ./public public/
 
 CMD ["./app"]

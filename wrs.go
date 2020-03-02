@@ -16,7 +16,6 @@ type Markers struct {
 	Song     string
 	SongPath string
 	SongType string
-	Infos    string
 	Files    []string
 }
 
@@ -44,7 +43,6 @@ func listen(w http.ResponseWriter, r *http.Request) {
 
 	// Fill markers values
 	if song == "" { // The song parameter isn't present
-		markers.Infos = "No song is playing."
 		markers.Song = "No song playing"
 		fmt.Println("Not listening")
 	} else { // The song parameter is present
@@ -52,7 +50,6 @@ func listen(w http.ResponseWriter, r *http.Request) {
 
 		// Check if we can acces to the file
 		if _, err := os.Stat(markers.SongPath); err != nil { // We can't acces the file
-			markers.Infos = "An error occured finding the file."
 			markers.Song = "Error finding file"
 			fmt.Println(err)
 		} else { // We can acces the file
@@ -65,7 +62,6 @@ func listen(w http.ResponseWriter, r *http.Request) {
 				mimeType = "application/octet-stream"
 			}
 
-			markers.Infos = fmt.Sprintf("Currently playing: %s !", song)
 			markers.Song = song
 			markers.SongType = mimeType
 			fmt.Println("Listening: ", markers.Song)
@@ -104,7 +100,16 @@ func main() {
 		"/music/",
 		http.StripPrefix(
 			"/music/",
-			http.FileServer(http.Dir("/music")),
+			http.FileServer(http.Dir("/music/")),
+		),
+	)
+
+	// Serve statics files
+	http.Handle(
+		"/",
+		http.StripPrefix(
+			"/",
+			http.FileServer(http.Dir("public/")),
 		),
 	)
 
