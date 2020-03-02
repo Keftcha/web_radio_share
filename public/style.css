@@ -24,7 +24,26 @@ body {
 .songs {
     overflow: auto;
     height: 85vh;
+}
+.songs a {
     padding-left: 5px;
+}
+
+.bar {
+    height: 30px;
+    background-color: #551A8B;
+}
+.bar img {
+    height: 25px;
+    padding: 2px;
+}
+
+#wrs_name_in_bar {
+    float: left;
+}
+
+#github_mark_in_bar {
+    float: right;
 }
 
 ::-webkit-scrollbar {

@@ -104,6 +104,15 @@ func main() {
 		),
 	)
 
+	// Serve images as staticfile when path start with `/image/`
+	http.Handle(
+		"/image/",
+		http.StripPrefix(
+			"/image/",
+			http.FileServer(http.Dir("img/")),
+		),
+	)
+
 	// Serve statics files
 	http.Handle(
 		"/",
