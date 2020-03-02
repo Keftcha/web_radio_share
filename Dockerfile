@@ -12,7 +12,7 @@ WORKDIR /bin/app
 
 COPY --from=builder /bin/app .
 
-COPY player.html .
+COPY ./page page/
 COPY ./public public/
 COPY ./img img/
 

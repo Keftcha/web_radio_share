@@ -85,7 +85,7 @@ func listen(w http.ResponseWriter, r *http.Request) {
 	markers.Files = audioFiles
 
 	// Load and execute the template
-	tpl, _ := template.ParseFiles("player.html")
+	tpl, _ := template.ParseFiles("page/player.html")
 	tpl.Execute(w, markers)
 }
 
