@@ -23,7 +23,7 @@ body {
 
 .songs {
     overflow: auto;
-    height: 85vh;
+    height: calc(100vh - (15vh + 31px));
 }
 .songs a {
     padding-left: 5px;
@@ -32,6 +32,9 @@ body {
 .bar {
     height: 30px;
     background-color: #551A8B;
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
 }
 .bar img {
     height: 25px;
