@@ -6,6 +6,8 @@ services:
         ports: [5596:8080]
         volumes:
             - ${music_directory}:/music
+        env_file:
+            .env
 
 volumes:
     music:
