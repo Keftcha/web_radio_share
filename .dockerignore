@@ -6,3 +6,6 @@ docker-compose.yml
 
 # Don't send our music in the container, we use a volume
 music/*
+
+# vim swap file
+*.swp
