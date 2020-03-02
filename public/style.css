@@ -11,10 +11,11 @@ body {
 }
 
 .player {
-    overflow: auto;
     text-align: center;
-    height: 14vh;
-    padding-top: 1vh;
+    padding-top: 1vh 0px;
+    position: sticky;
+    top: 0;
+    background: black;
 }
 
 .controls {
@@ -23,7 +24,7 @@ body {
 
 .songs {
     overflow: auto;
-    height: calc(100vh - (15vh + 31px));
+    height: 100%;
 }
 .songs a {
     padding-left: 5px;
@@ -32,13 +33,17 @@ body {
 .bar {
     height: 30px;
     background-color: #551A8B;
-    width: 100%;
-    position: fixed;
-    bottom: 0px;
+    position: sticky;
 }
 .bar img {
     height: 25px;
     padding: 2px;
+}
+.top_bar {
+    top: 0px
+}
+.bottom_bar {
+    bottom: 0px;
 }
 
 #wrs_name_in_bar {
