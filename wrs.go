@@ -89,11 +89,19 @@ func listen(w http.ResponseWriter, r *http.Request) {
 	tpl.Execute(w, markers)
 }
 
+func sign_in(w http.ResponseWriter, r *http.Request) {
+	tpl, _ := template.ParseFiles("page/sign_in.html")
+	tpl.Execute(w, struct{}{})
+}
+
 func main() {
 	fmt.Println("The server is now running !")
 
 	http.HandleFunc("/hoster", listen)
 	http.HandleFunc("/hoster/", listen)
+
+	http.HandleFunc("/signin", sign_in)
+	http.HandleFunc("/signin/", sign_in)
 
 	// Serve sound as static file when path start with `/music/`
 	http.Handle(

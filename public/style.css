@@ -3,16 +3,26 @@ body {
     font-family: ubuntu, system-ui;
     line-height: 1.5;
     margin: 0px;
+    color: #F2F2F2;
+}
+
+input {
+    background-color: #2F3136;
+    border: 0px;
+    border-radius: 5px;
+    font-family: ubuntu, system-ui;
+    line-height: 1.5;
+    color: #F2F2F2;
+    margin: 1px;
 }
 
 .title {
     font-weight: bold;
-    color: #F2F2F2;
 }
 
 .player {
     text-align: center;
-    padding-top: 1vh 0px;
+    padding: 1vh 0px;
     position: sticky;
     top: 0;
     background: black;
@@ -46,12 +56,32 @@ body {
     bottom: 0px;
 }
 
+.signin {
+    background: #18191B;
+    text-align: left;
+    width: fit-content;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.centered{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 #wrs_name_in_bar {
     float: left;
 }
 
 #github_mark_in_bar {
     float: right;
+}
+
+#signin_logo {
+    max-width: 100vw;
+    max-height: 100vh;
 }
 
 ::-webkit-scrollbar {
