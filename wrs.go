@@ -12,11 +12,22 @@ import (
 	"github.com/gabriel-vasile/mimetype"
 )
 
+type SongLink struct {
+	Link  string
+	Title string
+}
+
 type Markers struct {
-	Song     string
-	SongPath string
-	SongType string
-	Files    []string
+	Title      string
+	SongPath   string
+	SongType   string
+	FilesLinks []SongLink
+	Username   string
+	Password   string
+}
+
+func checkCredentials(username, password string) bool {
+	return (username == os.Getenv("username") && password == os.Getenv("password"))
 }
 
 func loadDirectoryTree(root string) []string {
@@ -38,19 +49,29 @@ func loadDirectoryTree(root string) []string {
 func listen(w http.ResponseWriter, r *http.Request) {
 	song := r.URL.Query().Get("song")
 
+	// Check if the user is authentificated
+	if !checkCredentials(
+		r.URL.Query().Get("username"),
+		r.URL.Query().Get("password"),
+	) {
+		// Redicect the user if he isn't authentificated
+		http.Redirect(w, r, "/signin", 401)
+		return
+	}
+
 	// Our markers
 	markers := new(Markers)
 
 	// Fill markers values
 	if song == "" { // The song parameter isn't present
-		markers.Song = "No song playing"
+		markers.Title = "No song playing"
 		fmt.Println("Not listening")
 	} else { // The song parameter is present
 		markers.SongPath = fmt.Sprintf("/music/%s", song)
 
 		// Check if we can acces to the file
 		if _, err := os.Stat(markers.SongPath); err != nil { // We can't acces the file
-			markers.Song = "Error finding file"
+			markers.Title = "Error finding file"
 			fmt.Println(err)
 		} else { // We can acces the file
 			// get the mime type of the song
@@ -62,9 +83,9 @@ func listen(w http.ResponseWriter, r *http.Request) {
 				mimeType = "application/octet-stream"
 			}
 
-			markers.Song = song
+			markers.Title = song
 			markers.SongType = mimeType
-			fmt.Println("Listening: ", markers.Song)
+			fmt.Println("Listening: ", markers.Title)
 		}
 	}
 
@@ -72,17 +93,28 @@ func listen(w http.ResponseWriter, r *http.Request) {
 	var files []string = loadDirectoryTree("/music")
 
 	// Remove the `/music/` part of files path and remove all non audio files
-	audioFiles := make([]string, 0)
+	audioFiles := make([]SongLink, 0)
+	audioLinkTpl := "/hoster/?song=%s&username=%s&password=%s"
 	for _, path := range files {
 		mt, err := mimetype.DetectFile(path)
 		mime := strings.Split(mt.String(), "/")[0] // General type of file
 		// There is no error and it's an audio file
 		if err == nil && mime == "audio" {
-			audioFiles = append(audioFiles, path[len("/music/"):])
+			// Build the song url link
+			audioTitle := path[len("/music/"):]
+			audioLink := fmt.Sprintf(
+				audioLinkTpl,
+				audioTitle,
+				os.Getenv("username"),
+				os.Getenv("password"),
+			)
+
+			songLink := SongLink{Title: audioTitle, Link: audioLink}
+			audioFiles = append(audioFiles, songLink)
 		}
 	}
 
-	markers.Files = audioFiles
+	markers.FilesLinks = audioFiles
 
 	// Load and execute the template
 	tpl, _ := template.ParseFiles("page/player.html")

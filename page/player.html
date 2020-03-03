@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>WRS player ({{.Song}})</title>
+        <title>WRS player ({{.Title}})</title>
         <link rel="stylesheet" href="/style.css" >
         <link rel="icon" type="image/png" href="/image/wrs_logo.png">
     </head>
@@ -12,7 +12,7 @@
         </div>
         <div class="player">
             <div class="title">
-                {{.Song}}
+                {{.Title}}
             </div>
 
 
@@ -25,9 +25,9 @@
         </div>
 
         <div class="songs">
-            {{range .Files}}
-                <a href="/hoster/?song={{.}}">
-                    {{.}}
+            {{range .FilesLinks}}
+                <a href="{{.Link}}">
+                    {{.Title}}
                 </a>
                 <br>
             {{end}}
