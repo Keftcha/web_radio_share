@@ -17,7 +17,7 @@ This is a basic web music player.
 Other users can come on the web page and listen what the hoster listen or they
 can listen others songs.
 
-When the hoster start the server and go the web page at the address
+When the hoster start the server and go to the web page at the address
 [localhost:5596/hoster](http://localhost:5596/hoster "The web page of the running project").  
 In the web page he can see all the songs he have in a choosen directory.
 He must be logged in to change the sound (so no other users can change it).
@@ -39,3 +39,13 @@ listening and lister that one at the same time as the hoster.
 
 The project must be configured throught the `.env` file.  
 You have the `.env.tpl` file to help make your own configuration.
+
+## Implementation
+
+### The authentification
+
+The authentification is absolutly insecure. It just pass the username and
+password as querystring parameters (as `username` and `password`).  
+It get the username and password from the environment variable (named `username`
+and `password`).  
+There variables can be set throught the `.env` file.
