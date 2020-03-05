@@ -30,23 +30,29 @@ func stream(w http.ResponseWriter, r *http.Request) {
 	// Load directoies and files
 	var files []string = loadDirectoryTree("/music")
 
-	// Make the list of song
-	linkTpl := "/hoster/?song=%s"
-	markers.FilesLinks = makeSongsLink(files, linkTpl)
 	// Add the authentigication parameters to song links
-	authTpl := "&username=%s&password=%s"
-	for idx, songLink := range markers.FilesLinks {
-		markers.FilesLinks[idx].Link = songLink.Link + fmt.Sprintf(authTpl, os.Getenv("username"), os.Getenv("password"))
-	}
+	authTpl := fmt.Sprintf("&username=%s&password=%s", os.Getenv("username"), os.Getenv("password"))
+	// Make the list of song
+	linkTpl := "/hoster/?song=%s" + authTpl
+	markers.FilesLinks = makeSongsLink(files, linkTpl)
 
 	// Load and execute the template
 	tpl, _ := template.ParseFiles("page/player.html")
 	tpl.Execute(w, markers)
+
+	fmt.Println(fmt.Sprintf("You now streaming: \033[33m%s\033[0m", markers.Title))
 }
 
 func signin(w http.ResponseWriter, r *http.Request) {
 	tpl, _ := template.ParseFiles("page/sign_in.html")
 	tpl.Execute(w, struct{}{})
+
+	fmt.Println(
+		fmt.Sprintf(
+			"\033[31m/!\\\033[0m The host \033[34m%s\033[0m is on the sign in page !",
+			r.Host,
+		),
+	)
 }
 
 func listen(w http.ResponseWriter, r *http.Request) {
@@ -69,4 +75,12 @@ func listen(w http.ResponseWriter, r *http.Request) {
 	// Load and execute the template
 	tpl, _ := template.ParseFiles("page/player.html")
 	tpl.Execute(w, markers)
+
+	fmt.Println(
+		fmt.Sprintf(
+			"\033[34m%s\033[0m listening \033[33m%s\033[0m",
+			r.Host,
+			markers.Title,
+		),
+	)
 }

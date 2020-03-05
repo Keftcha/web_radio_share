@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	fmt.Println("The server is now running !")
+	fmt.Println("\033[35mThe server is now running !\033[0m")
 
 	http.HandleFunc("/hoster", stream)
 	http.HandleFunc("/hoster/", stream)

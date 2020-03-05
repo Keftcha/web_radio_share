@@ -54,10 +54,7 @@ func makeSongsLink(files []string, linkTpl string) []SongLink {
 		if err == nil && mime == "audio" {
 			// Build the song url link
 			audioTitle := path[len("/music/"):]
-			audioLink := fmt.Sprintf(
-				linkTpl,
-				audioTitle,
-			)
+			audioLink := fmt.Sprintf(linkTpl, audioTitle)
 
 			songLink := SongLink{Title: audioTitle, Link: audioLink}
 			audioFiles = append(audioFiles, songLink)
@@ -69,7 +66,6 @@ func makeSongsLink(files []string, linkTpl string) []SongLink {
 func findSong(song string) (title string, songType string, songPath string) {
 	if song == "" { // The song parameter isn't present
 		title = "No song playing"
-		fmt.Println("Not listening")
 	} else { // The song parameter is present
 		songPath = fmt.Sprintf("/music/%s", song)
 
@@ -89,7 +85,6 @@ func findSong(song string) (title string, songType string, songPath string) {
 
 			title = song
 			songType = mimeType
-			fmt.Println("Listening: ", title)
 		}
 	}
 	return title, songType, songPath
