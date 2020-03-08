@@ -18,6 +18,12 @@ func main() {
 	http.HandleFunc("/listen", listen)
 	http.HandleFunc("/listen/", listen)
 
+	http.HandleFunc("/listen_stream", listenStream)
+	http.HandleFunc("/listen_stream/", listenStream)
+
+	http.HandleFunc("/broadcasting", broadcasting)
+	http.HandleFunc("/broadcasting/", broadcasting)
+
 	// Serve sound as static file when path start with `/music/`
 	http.Handle(
 		"/music/",

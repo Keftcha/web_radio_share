@@ -84,3 +84,11 @@ func listen(w http.ResponseWriter, r *http.Request) {
 		),
 	)
 }
+
+func listenStream(w http.ResponseWriter, r *http.Request) {
+	tpl, _ := template.ParseFiles("page/listen_stream.html")
+	tpl.Execute(w, nil)
+}
+
+func broadcasting(w http.ResponseWriter, r *http.Request) {
+}

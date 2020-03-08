@@ -71,6 +71,12 @@ input {
     transform: translate(-50%, -50%);
 }
 
+.bottom_screen {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+}
+
 #wrs_name_in_bar {
     float: left;
 }
