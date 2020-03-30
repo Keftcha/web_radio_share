@@ -5,9 +5,8 @@ services:
         build: "."
         ports: [5596:8080]
         volumes:
-            - ${music_directory}:/music
+            - type: bind
+              source: ${music_directory}
+              target: /music
         env_file:
             .env
-
-volumes:
-    music:
