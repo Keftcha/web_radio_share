@@ -3,6 +3,11 @@ LICENSE
 README.md
 Dockerfile
 docker-compose.yml
+.dockerignore
+.git/
+.gitignore
+.env
+.env.tpl
 
 # Don't send our music in the container, we use a volume
 music/*
