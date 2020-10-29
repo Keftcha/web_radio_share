@@ -9,20 +9,21 @@ import (
 func main() {
 	fmt.Println("\033[35mThe server is now running !\033[0m")
 
+	// Manage the music
 	http.HandleFunc("/hoster", stream)
 	http.HandleFunc("/hoster/", stream)
 
+	// Sign in to manage the music
 	http.HandleFunc("/signin", signin)
 	http.HandleFunc("/signin/", signin)
 
+	// Listen all music of the host
 	http.HandleFunc("/listen", listen)
 	http.HandleFunc("/listen/", listen)
 
+	// Listen what the hoster listen
 	http.HandleFunc("/listen_stream", listenStream)
 	http.HandleFunc("/listen_stream/", listenStream)
-
-	http.HandleFunc("/broadcasting", broadcasting)
-	http.HandleFunc("/broadcasting/", broadcasting)
 
 	// Serve sound as static file when path start with `/music/`
 	http.Handle(
@@ -44,9 +45,9 @@ func main() {
 
 	// Serve statics files
 	http.Handle(
-		"/",
+		"/public/",
 		http.StripPrefix(
-			"/",
+			"/public/",
 			http.FileServer(http.Dir("public/")),
 		),
 	)
