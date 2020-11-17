@@ -9,6 +9,7 @@ import (
 
 func stream(w http.ResponseWriter, r *http.Request) {
 	song := r.URL.Query().Get("song")
+	strmSvc.Start(song)
 
 	// Check if the user is authentificated
 	if !checkCredentials(
@@ -28,9 +29,9 @@ func stream(w http.ResponseWriter, r *http.Request) {
 	markers.Title, markers.SongType, markers.SongPath = findSong(song)
 
 	// Load directoies and files
-	var files []string = loadDirectoryTree("/music")
+	var files []string = loadDirectoryTree(musicRootDir)
 
-	// Add the authentigication parameters to song links
+	// Add the authentication parameters to song links
 	authTpl := fmt.Sprintf("&username=%s&password=%s", os.Getenv("username"), os.Getenv("password"))
 	// Make the list of song
 	linkTpl := "/hoster/?song=%s" + authTpl
@@ -66,7 +67,7 @@ func listen(w http.ResponseWriter, r *http.Request) {
 	markers.Title, markers.SongType, markers.SongPath = findSong(song)
 
 	// Load directoies and files
-	var files []string = loadDirectoryTree("/music")
+	var files []string = loadDirectoryTree(musicRootDir)
 
 	// Make the list of song
 	linkTpl := "/listen/?song=%s"

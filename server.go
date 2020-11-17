@@ -4,7 +4,20 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/keftcha/wrs/streamingservice"
 )
+
+// Our streaming service
+var strmSvc *streamingservice.StreamingService
+
+// The root directory to find musics
+var musicRootDir string
+
+func init() {
+	strmSvc = streamingservice.New()
+	musicRootDir = "/music/"
+}
 
 func main() {
 	fmt.Println("\033[35mThe server is now running !\033[0m")
@@ -34,7 +47,7 @@ func main() {
 		"/music/",
 		http.StripPrefix(
 			"/music/",
-			http.FileServer(http.Dir("/music/")),
+			http.FileServer(http.Dir(musicRootDir)),
 		),
 	)
 

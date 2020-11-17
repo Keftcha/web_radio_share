@@ -45,7 +45,7 @@ func loadDirectoryTree(root string) []string {
 }
 
 func makeSongsLink(files []string, linkTpl string) []SongLink {
-	// Remove the `/music/` part of files path and remove all non audio files
+	// Remove the `musicRootDir` part of files path and remove all non audio files
 	audioFiles := make([]SongLink, 0)
 	for _, path := range files {
 		mt, err := mimetype.DetectFile(path)
@@ -53,7 +53,7 @@ func makeSongsLink(files []string, linkTpl string) []SongLink {
 		// There is no error and it's an audio file
 		if err == nil && mime == "audio" {
 			// Build the song url link
-			audioTitle := path[len("/music/"):]
+			audioTitle := strings.TrimPrefix(path, musicRootDir)
 			audioLink := fmt.Sprintf(linkTpl, audioTitle)
 
 			songLink := SongLink{Title: audioTitle, Link: audioLink}
@@ -67,7 +67,7 @@ func findSong(song string) (title string, songType string, songPath string) {
 	if song == "" { // The song parameter isn't present
 		title = "No song playing"
 	} else { // The song parameter is present
-		songPath = fmt.Sprintf("/music/%s", song)
+		songPath = fmt.Sprintf("%s%s", musicRootDir, song)
 
 		// Check if we can acces to the file
 		if _, err := os.Stat(songPath); err != nil { // We can't acces the file
