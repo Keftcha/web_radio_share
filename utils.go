@@ -47,9 +47,22 @@ func loadDirectoryContent(dirPath string) ([]File, []File, error) {
 		return nil, nil, err
 	}
 
-	dirs := make([]File, 0)
-	musics := make([]File, 0)
 	// Separate directories and musics
+	dirs := make([]File, 0)
+	// Add the parent and rood directory to the directory list
+	if dirPath != musicRootDir {
+		dirs = append(dirs, File{musicRootDir, "/", "text/directory"})
+		fmt.Println(strings.TrimSuffix(dirPath, filepath.Base(dirPath)+"/"))
+		dirs = append(
+			dirs,
+			File{
+				strings.TrimSuffix(dirPath, filepath.Base(dirPath)+"/"),
+				"/..",
+				"text/directory",
+			},
+		)
+	}
+	musics := make([]File, 0)
 	for _, file := range files {
 		if file.IsDir() {
 			dir := File{filepath.Clean(dirPath + file.Name()), file.Name(), "text/directory"}
