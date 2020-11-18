@@ -80,7 +80,7 @@ func stream(w http.ResponseWriter, r *http.Request) {
 
 func signin(w http.ResponseWriter, r *http.Request) {
 	tpl, _ := template.ParseFiles("page/sign_in.html")
-	tpl.Execute(w, struct{}{})
+	tpl.Execute(w, musicRootDir)
 
 	fmt.Println(
 		fmt.Sprintf(
