@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -24,24 +25,49 @@ type Markers struct {
 	Authenticated bool
 }
 
+// File representing a file
+// - absPath → absolute path of the file
+// - name → name of the file
+// - mimeType → mimeType of the file
+type File struct {
+	AbsPath  string
+	Name     string
+	MimeType string
+}
+
 func checkCredentials(username, password string) bool {
 	return (username == os.Getenv("username") && password == os.Getenv("password"))
 }
 
-func loadDirectoryTree(root string) []string {
-	files := make([]string, 0, 1)
-	filepath.Walk(
-		root,
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
+// Load directories and music files in an absolute directory
+func loadDirectoryContent(dirPath string) ([]File, []File, error) {
+	// Read dir content
+	files, err := ioutil.ReadDir(dirPath)
+	if err != nil {
+		return nil, nil, err
+	}
 
-			files = append(files, path)
-			return nil
-		},
-	)
-	return files
+	dirs := make([]File, 0)
+	musics := make([]File, 0)
+	// Separate directories and musics
+	for _, file := range files {
+		if file.IsDir() {
+			dir := File{filepath.Clean(dirPath + file.Name()), file.Name(), "text/directory"}
+			dirs = append(dirs, dir)
+		} else {
+			// Detect the mimetype of the file
+			mimeType, err := mimetype.DetectFile(file.Name())
+			generalMimeType := strings.Split(mimeType.String(), "/")[0]
+			if err != nil {
+				fmt.Printf("MimeType detection failed on file %s: %s\n", file.Name(), err)
+			} else if generalMimeType == "audio" { // Check if it's an audio file
+				music := File{filepath.Clean(dirPath + file.Name()), file.Name(), mimeType.String()}
+				musics = append(musics, music)
+			}
+		}
+	}
+
+	return dirs, musics, nil
 }
 
 func makeSongsLink(files []string, linkTpl string) []SongLink {
@@ -72,9 +98,9 @@ func findSong(song string) (title string, songType string, songPath string) {
 		// Check if we can acces to the file
 		if _, err := os.Stat(songPath); err != nil { // We can't acces the file
 			title = "Error finding file"
-			fmt.Println(err)
+			fmt.Printf("Error accessing the file %s: %s\n", songPath, err)
 		} else { // We can acces the file
-			// get the mime type of the song
+			// Get the mime type of the song
 			var mimeType string
 			if mime, err := mimetype.DetectFile(songPath); err == nil {
 				mimeType = mime.String()

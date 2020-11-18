@@ -23,16 +23,24 @@
 
             <audio controls autoplay class="controls">
                 <source
-                    src="{{.SongPath}}"
+                    src="{{.Path}}"
                     type="{{.SongType}}"
                 >
             </audio>
         </div>
 
+        <div class="dirs">
+            {{range .Dirs}}
+                <a
+                    href="/hoster/?crntDir={{.AbsPath}}&username={{$.Username}}&password={{$.Passwd}}">
+                   {{.Name}}
+                </a>
+            {{end}}
+        </div>
         <div class="songs">
-            {{range .FilesLinks}}
-                <a href="{{.Link}}">
-                    {{.Title}}
+            {{range .Musics}}
+                <a href="/hoster/?song={{.AbsPath}}{{$.Credentials}}">
+                    {{.Name}}
                 </a>
                 <br>
             {{end}}

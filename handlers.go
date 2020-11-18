@@ -4,44 +4,78 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"os"
+	"path/filepath"
+
+	"github.com/gabriel-vasile/mimetype"
 )
 
 func stream(w http.ResponseWriter, r *http.Request) {
+	// Song absolute path
 	song := r.URL.Query().Get("song")
 	strmSvc.Start(song)
 
+	username := r.URL.Query().Get("username")
+	password := r.URL.Query().Get("password")
+
 	// Check if the user is authentificated
 	if !checkCredentials(
-		r.URL.Query().Get("username"),
-		r.URL.Query().Get("password"),
+		username,
+		password,
 	) {
 		// Redicect the user if he isn't authentificated
 		http.Redirect(w, r, "/signin", 401)
 		return
 	}
 
+	// Get the current directory of the user is in
+	crntDir := r.URL.Query().Get("crntDir")
+	if crntDir == "" {
+		crntDir = musicRootDir
+	}
+
+	// Absolut path of the current directory
+	absCrntDir := filepath.Clean(crntDir) + "/"
+
+	// Load directoies and musics
+	dirs, musics, err := loadDirectoryContent(absCrntDir)
+	if err != nil {
+		http.Redirect(w, r, fmt.Sprintf("/hoster/?crntDir=%s&username=%s&password=%s", musicRootDir, username, password), 500)
+		fmt.Printf("Failed to load the %s directory content: %s\n", crntDir, err)
+		return
+	}
+
 	// Our markers
-	markers := new(Markers)
-	markers.Authenticated = true
-
-	// Fill markers values
-	markers.Title, markers.SongType, markers.SongPath = findSong(song)
-
-	// Load directoies and files
-	var files []string = loadDirectoryTree(musicRootDir)
-
-	// Add the authentication parameters to song links
-	authTpl := fmt.Sprintf("&username=%s&password=%s", os.Getenv("username"), os.Getenv("password"))
-	// Make the list of song
-	linkTpl := "/hoster/?song=%s" + authTpl
-	markers.FilesLinks = makeSongsLink(files, linkTpl)
+	markers := make(map[string]interface{})
+	// Directories and musics
+	markers["Dirs"] = dirs
+	markers["Musics"] = musics
+	// User authentification
+	markers["Authenticated"] = true
+	// User credentials
+	markers["Username"] = username
+	markers["Passwd"] = password
+	markers["Credentials"] = fmt.Sprintf("&username=%s&password=%s", username, password)
+	// Currently playing song markers
+	if song != "" {
+		if mime, err := mimetype.DetectFile(song); err == nil {
+			markers["Title"] = filepath.Base(song)
+			markers["Path"] = song
+			markers["MimeType"] = mime
+		} else {
+			markers["Title"] = "Failed to find the mime type"
+			fmt.Printf("Failed to finde `%s` file mimetype: %s\n", song, err)
+		}
+	} else {
+		markers["Title"] = "No song playing"
+	}
 
 	// Load and execute the template
 	tpl, _ := template.ParseFiles("page/player.html")
-	tpl.Execute(w, markers)
+	if err := tpl.Execute(w, markers); err != nil {
+		fmt.Printf("Failed to execute `page/player.html` template: %s\n", err)
+	}
 
-	fmt.Println(fmt.Sprintf("You now streaming: \033[33m%s\033[0m", markers.Title))
+	fmt.Println(fmt.Sprintf("You now streaming: \033[33m%s\033[0m", markers["Title"]))
 }
 
 func signin(w http.ResponseWriter, r *http.Request) {
@@ -51,7 +85,7 @@ func signin(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(
 		fmt.Sprintf(
 			"\033[31m/!\\\033[0m The host \033[34m%s\033[0m is on the sign in page !",
-			r.Host,
+			r.RemoteAddr,
 		),
 	)
 }
@@ -67,7 +101,7 @@ func listen(w http.ResponseWriter, r *http.Request) {
 	markers.Title, markers.SongType, markers.SongPath = findSong(song)
 
 	// Load directoies and files
-	var files []string = loadDirectoryTree(musicRootDir)
+	var files []string = nil //loadDirectoryTree(musicRootDir)
 
 	// Make the list of song
 	linkTpl := "/listen/?song=%s"

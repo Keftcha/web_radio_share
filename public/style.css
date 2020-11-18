@@ -32,6 +32,12 @@ input {
     width: 85%;
 }
 
+.dirs a {
+    color: blue;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
 .songs {
     overflow: auto;
     height: 100%;
