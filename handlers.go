@@ -49,12 +49,13 @@ func stream(w http.ResponseWriter, r *http.Request) {
 	// Directories and musics
 	markers["Dirs"] = dirs
 	markers["Musics"] = musics
+	// Current directory where the user is
+	markers["CrntDir"] = crntDir
 	// User authentification
 	markers["Authenticated"] = true
 	// User credentials
 	markers["Username"] = username
 	markers["Passwd"] = password
-	markers["Credentials"] = fmt.Sprintf("&username=%s&password=%s", username, password)
 	// Currently playing song markers
 	if song != "" {
 		if mime, err := mimetype.DetectFile(song); err == nil {
@@ -72,7 +73,9 @@ func stream(w http.ResponseWriter, r *http.Request) {
 	// Load and execute the template
 	tpl, _ := template.ParseFiles("page/player.html")
 	if err := tpl.Execute(w, markers); err != nil {
+		http.Redirect(w, r, fmt.Sprintf("/hoster/?crntDir=%s&username=%s&password=%s", musicRootDir, username, password), 500)
 		fmt.Printf("Failed to execute `page/player.html` template: %s\n", err)
+		return
 	}
 
 	fmt.Println(fmt.Sprintf("You now streaming: \033[33m%s\033[0m", markers["Title"]))

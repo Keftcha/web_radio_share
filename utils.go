@@ -52,7 +52,6 @@ func loadDirectoryContent(dirPath string) ([]File, []File, error) {
 	// Add the parent and rood directory to the directory list
 	if dirPath != musicRootDir {
 		dirs = append(dirs, File{musicRootDir, "/", "text/directory"})
-		fmt.Println(strings.TrimSuffix(dirPath, filepath.Base(dirPath)+"/"))
 		dirs = append(
 			dirs,
 			File{
@@ -68,13 +67,14 @@ func loadDirectoryContent(dirPath string) ([]File, []File, error) {
 			dir := File{filepath.Clean(dirPath + file.Name()), file.Name(), "text/directory"}
 			dirs = append(dirs, dir)
 		} else {
+			absFlePath := filepath.Clean(dirPath + file.Name())
 			// Detect the mimetype of the file
-			mimeType, err := mimetype.DetectFile(file.Name())
+			mimeType, err := mimetype.DetectFile(absFlePath)
 			generalMimeType := strings.Split(mimeType.String(), "/")[0]
 			if err != nil {
-				fmt.Printf("MimeType detection failed on file %s: %s\n", file.Name(), err)
+				fmt.Printf("MimeType detection failed on file `%s`: %s\n", absFlePath, err)
 			} else if generalMimeType == "audio" { // Check if it's an audio file
-				music := File{filepath.Clean(dirPath + file.Name()), file.Name(), mimeType.String()}
+				music := File{absFlePath, file.Name(), mimeType.String()}
 				musics = append(musics, music)
 			}
 		}

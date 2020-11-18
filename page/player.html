@@ -39,7 +39,7 @@
         </div>
         <div class="songs">
             {{range .Musics}}
-                <a href="/hoster/?song={{.AbsPath}}{{$.Credentials}}">
+            <a href="/hoster/?crntDir={{$.CrntDir}}&song={{.AbsPath}}&username={{$.Username}}&password={{$.Passwd}}">
                     {{.Name}}
                 </a>
                 <br>
