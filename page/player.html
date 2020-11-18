@@ -32,7 +32,7 @@
         <div class="dirs">
             {{range .Dirs}}
                 <a
-                    href="{{$.PathUrl}}?crntDir={{.AbsPath}}&username={{$.Username}}&password={{$.Passwd}}">
+                    href="{{$.PathUrl}}?crntDir={{.AbsPath}}{{if $.Authenticated}}&username={{$.Username}}&password={{$.Passwd}}{{end}}">
                    {{.Name}}
                 </a>
             {{end}}

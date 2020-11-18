@@ -48,7 +48,7 @@ func stream(w http.ResponseWriter, r *http.Request) {
 	// Our markers
 	markers := make(map[string]interface{})
 	// Listen mode is listener
-	markers["PathUrl"] = "/listen/"
+	markers["PathUrl"] = "/hoster/"
 	// Directories and musics
 	markers["Dirs"] = dirs
 	markers["Musics"] = musics
