@@ -1,0 +1,10 @@
+{{block "top_bar" .}}
+    <div class="bar top_bar">
+        <img id="wrs_logo_in_bar" src="/image/wrs_logo.png">
+        {{if .Authenticated}}
+            <a href="/signin" id="signout">
+                Sign out
+            </a>
+        {{end}}
+    </div>
+{{end}}

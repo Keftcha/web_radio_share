@@ -74,7 +74,7 @@ func stream(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Load and execute the template
-	tpl, _ := template.ParseFiles("page/player.html")
+	tpl, _ := template.ParseFiles("page/player.html", "page/bottom_bar.html", "page/top_bar.html")
 	if err := tpl.Execute(w, markers); err != nil {
 		http.Redirect(w, r, fmt.Sprintf("/hoster/?crntDir=%s&username=%s&password=%s", musicRootDir, username, password), 500)
 		fmt.Printf("Failed to execute `page/player.html` template: %s\n", err)
@@ -102,9 +102,6 @@ func listen(w http.ResponseWriter, r *http.Request) {
 	// Song absolute path
 	song := r.URL.Query().Get("song")
 	strmSvc.Start(song)
-
-	username := r.URL.Query().Get("username")
-	password := r.URL.Query().Get("password")
 
 	// Get the current directory of the user is in
 	crntDir := r.URL.Query().Get("crntDir")
@@ -149,9 +146,10 @@ func listen(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Load and execute the template
-	tpl, _ := template.ParseFiles("page/player.html")
+	tpl, _ := template.ParseFiles("page/player.html", "page/bottom_bar.html", "page/top_bar.html")
+
 	if err := tpl.Execute(w, markers); err != nil {
-		http.Redirect(w, r, fmt.Sprintf("/hoster/?crntDir=%s&username=%s&password=%s", musicRootDir, username, password), 500)
+		http.Redirect(w, r, fmt.Sprintf("/listen/?crntDir=%s", musicRootDir), 500)
 		fmt.Printf("Failed to execute `page/player.html` template: %s\n", err)
 		return
 	}

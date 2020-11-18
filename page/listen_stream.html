@@ -7,24 +7,13 @@
         <link rel="icon" type="image/png" href="/image/wrs_logo.png">
     </head>
     <body>
-        <div class="bar top_bar">
-            <img id="wrs_logo_in_bar" src="/image/wrs_logo.png">
-        </div>
+        {{template "top_bar" .}}
         <audio controls autoplay class="controls centered">
             <source
                 src="/broadcasting"
                 type="plop"
             >
         </audio>
-        <div class="bar bottom_screen">
-            <img id="wrs_name_in_bar" src="/image/wrs_name.png">
-            <a
-                id="github_mark_in_bar"
-                target="_blank"
-                href="https://github.com/Keftcha/web_radio_share"
-            >
-                <img src="/image/github_mark.png">
-            </a>
-        </div>
+        {{template "bottom_bar" .}}
     </body>
 </html>
