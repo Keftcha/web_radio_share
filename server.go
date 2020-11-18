@@ -23,23 +23,18 @@ func main() {
 	fmt.Println("\033[35mThe server is now running !\033[0m")
 
 	// Page to manage the music
-	http.HandleFunc("/hoster", stream)
 	http.HandleFunc("/hoster/", stream)
 
 	// Page to sign in to manage the music
-	http.HandleFunc("/signin", signin)
 	http.HandleFunc("/signin/", signin)
 
-	// Pahe to listen all music of the host
-	http.HandleFunc("/listen", listen)
+	// Page to listen all music of the host
 	http.HandleFunc("/listen/", listen)
 
 	// Page to listen what the hoster listen
-	http.HandleFunc("/listen_stream", listenStream)
 	http.HandleFunc("/listen_stream/", listenStream)
 
 	// Broadcast the song that the host listen
-	http.HandleFunc("/broadcasting", broadcasting)
 	http.HandleFunc("/broadcasting/", broadcasting)
 
 	// Serve sound as static file when path start with `/music/`
