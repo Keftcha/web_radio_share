@@ -47,6 +47,8 @@ func stream(w http.ResponseWriter, r *http.Request) {
 
 	// Our markers
 	markers := make(map[string]interface{})
+	// Listen mode is listener
+	markers["PathUrl"] = "/listen/"
 	// Directories and musics
 	markers["Dirs"] = dirs
 	markers["Musics"] = musics
@@ -97,31 +99,68 @@ func signin(w http.ResponseWriter, r *http.Request) {
 
 // Page to listen all music of the host (the `/listen/` route)
 func listen(w http.ResponseWriter, r *http.Request) {
+	// Song absolute path
 	song := r.URL.Query().Get("song")
+	strmSvc.Start(song)
+
+	username := r.URL.Query().Get("username")
+	password := r.URL.Query().Get("password")
+
+	// Get the current directory of the user is in
+	crntDir := r.URL.Query().Get("crntDir")
+	if crntDir == "" {
+		crntDir = musicRootDir
+	}
+
+	// Absolut path of the current directory
+	absCrntDir := filepath.Clean(crntDir) + "/"
+
+	// Load directoies and musics
+	dirs, musics, err := loadDirectoryContent(absCrntDir)
+	if err != nil {
+		http.Redirect(w, r, fmt.Sprintf("/listen/?crntDir=%s", musicRootDir), 500)
+		fmt.Printf("Failed to load the %s directory content: %s\n", crntDir, err)
+		return
+	}
 
 	// Our markers
-	markers := new(Markers)
-	markers.Authenticated = false
-
-	// Fill markers values
-	markers.Title, markers.SongType, markers.SongPath = findSong(song)
-
-	// Load directoies and files
-	var files []string = nil //loadDirectoryTree(musicRootDir)
-
-	// Make the list of song
-	linkTpl := "/listen/?song=%s"
-	markers.FilesLinks = makeSongsLink(files, linkTpl)
+	markers := make(map[string]interface{})
+	// Listen mode is listener
+	markers["PathUrl"] = "/listen/"
+	// Directories and musics
+	markers["Dirs"] = dirs
+	markers["Musics"] = musics
+	// Current directory where the user is
+	markers["CrntDir"] = crntDir
+	// User authentification
+	markers["Authenticated"] = false
+	// Currently playing song markers
+	if song != "" {
+		if mime, err := mimetype.DetectFile(song); err == nil {
+			markers["Title"] = filepath.Base(song)
+			markers["Path"] = song
+			markers["MimeType"] = mime
+		} else {
+			markers["Title"] = "Failed to find the mime type"
+			fmt.Printf("Failed to finde `%s` file mimetype: %s\n", song, err)
+		}
+	} else {
+		markers["Title"] = "No song playing"
+	}
 
 	// Load and execute the template
 	tpl, _ := template.ParseFiles("page/player.html")
-	tpl.Execute(w, markers)
+	if err := tpl.Execute(w, markers); err != nil {
+		http.Redirect(w, r, fmt.Sprintf("/hoster/?crntDir=%s&username=%s&password=%s", musicRootDir, username, password), 500)
+		fmt.Printf("Failed to execute `page/player.html` template: %s\n", err)
+		return
+	}
 
 	fmt.Println(
 		fmt.Sprintf(
 			"\033[34m%s\033[0m listening \033[33m%s\033[0m",
-			r.Host,
-			markers.Title,
+			r.RemoteAddr,
+			markers["Title"],
 		),
 	)
 }

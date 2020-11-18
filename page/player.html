@@ -32,14 +32,14 @@
         <div class="dirs">
             {{range .Dirs}}
                 <a
-                    href="/hoster/?crntDir={{.AbsPath}}&username={{$.Username}}&password={{$.Passwd}}">
+                    href="{{$.PathUrl}}?crntDir={{.AbsPath}}&username={{$.Username}}&password={{$.Passwd}}">
                    {{.Name}}
                 </a>
             {{end}}
         </div>
         <div class="songs">
             {{range .Musics}}
-            <a href="/hoster/?crntDir={{$.CrntDir}}&song={{.AbsPath}}&username={{$.Username}}&password={{$.Passwd}}">
+            <a href="{{$.PathUrl}}?crntDir={{$.CrntDir}}&song={{.AbsPath}}&username={{$.Username}}&password={{$.Passwd}}">
                     {{.Name}}
                 </a>
                 <br>
