@@ -9,6 +9,7 @@ import (
 	"github.com/gabriel-vasile/mimetype"
 )
 
+// Page to manage the music (the `/hoster/` route)
 func stream(w http.ResponseWriter, r *http.Request) {
 	// Song absolute path
 	song := r.URL.Query().Get("song")
@@ -81,6 +82,7 @@ func stream(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(fmt.Sprintf("You now streaming: \033[33m%s\033[0m", markers["Title"]))
 }
 
+// Page to sign in to manage the music (the `/signin/` route)
 func signin(w http.ResponseWriter, r *http.Request) {
 	tpl, _ := template.ParseFiles("page/sign_in.html")
 	tpl.Execute(w, musicRootDir)
@@ -93,6 +95,7 @@ func signin(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
+// Page to listen all music of the host (the `/listen/` route)
 func listen(w http.ResponseWriter, r *http.Request) {
 	song := r.URL.Query().Get("song")
 
